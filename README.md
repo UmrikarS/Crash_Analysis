@@ -5,23 +5,23 @@
 
 ##  Table of Contents
 
-1. [Project Overview](#-project-overview)
-2. [Business Problem & Research Objectives](#-business-problem--research-objectives)
-3. [Data Source](#-data-source)
-4. [Architecture  Medallion Data Pipeline](#-architecture--medallion-data-pipeline)
-5. [Tech Stack](#-tech-stack)
-6. [Bronze Layer  Ingestion](#-bronze-layer--ingestion)
-7. [Silver Layer  Cleaning & Validation](#-silver-layer--cleaning--validation)
-8. [Gold Layer  Feature Engineering](#-gold-layer--feature-engineering)
-9. [Analysis 1  Geospatial Hotspot Detection](#-analysis-1--geospatial-hotspot-detection)
-10. [Analysis 2  Machine Learning Severity Prediction](#-analysis-2--machine-learning-severity-prediction)
-11. [Analysis 3  Temporal & Holiday Analysis](#-analysis-3--temporal--holiday-analysis)
-12. [Analysis 4  Vulnerable Road User Risk](#-analysis-4--vulnerable-road-user-risk)
-13. [Power BI Dashboard](#-power-bi-dashboard)
-14. [Key Findings & Recommendations](#-key-findings--recommendations)
-15. [Repository Structure](#-repository-structure)
-16. [How to Run This Project](#-how-to-run-this-project)
-17. [Limitations & Ethical Considerations](#-limitations--ethical-considerations)
+1. [Project Overview](#project-overview)
+2. [Business Problem & Research Objectives](#business-problem--research-objectives)
+3. [Data Source](#data-source)
+4. [Architecture: Medallion Data Pipeline](#architecture-medallion-data-pipeline)
+5. [Tech Stack](#tech-stack)
+6. [Bronze Layer: Ingestion](#bronze-layer-ingestion)
+7. [Silver Layer: Cleaning & Validation](#silver-layer-cleaning--validation)
+8. [Gold Layer: Feature Engineering](#gold-layer-feature-engineering)
+9. [Analysis 1: Geospatial Hotspot Detection](#analysis-1-geospatial-hotspot-detection)
+10. [Analysis 2: Machine Learning Severity Prediction](#analysis-2-machine-learning-severity-prediction)
+11. [Analysis 3: Temporal & Holiday Analysis](#analysis-3-temporal--holiday-analysis)
+12. [Analysis 4: Vulnerable Road User Risk](#analysis-4-vulnerable-road-user-risk)
+13. [Power BI Dashboard](#power-bi-dashboard)
+14. [Key Findings & Recommendations](#key-findings--recommendations)
+15. [Repository Structure](#repository-structure)
+16. [How to Run This Project](#how-to-run-This-project)
+17. [Limitations & Ethical Considerations](#limitations--ethical-considerations)
 
 ---
 
@@ -62,7 +62,7 @@ Q.4 What should Auckland Transport / NZTA do about it?
 
 ---
 
-## Architecture  Medallion Data Pipeline
+## Architecture Medallion Data Pipeline
 
 ```mermaid
 flowchart TD
@@ -107,7 +107,7 @@ Every layer is a physical **Delta Lake table**, not a transient dataframe  each 
 
 ---
 
-## Bronze Layer  Ingestion
+## Bronze Layer Ingestion
 
 [`01_bronze_ingestion.ipynb`](01_bronze_ingestion.ipynb) reads the raw parquet file from Fabric OneLake, adds **data lineage metadata** (ingestion timestamp, source file, data source, year range), and writes it as a Delta table:
 
@@ -127,7 +127,7 @@ A built-in **data quality report** immediately follows  record count, date range
 
 ---
 
-## Silver Layer  Cleaning & Validation
+## Silver Layer Cleaning & Validation
 
 [`03_silver_cleaning.ipynb`](03_silver_cleaning.ipynb) applies a 7-step, fully logged cleaning pipeline:
 
@@ -145,7 +145,7 @@ Every step prints a before/after record count, so data loss at each stage is ful
 
 ---
 
-## Gold Layer  Feature Engineering
+## Gold Layer Feature Engineering
 
 [`04_gold_feature_engineering.ipynb`](04_gold_feature_engineering.ipynb) turns cleaned records into an ML- and BI-ready feature table  **25 engineered features** across four categories:
 
@@ -183,7 +183,7 @@ Result: `gold_crashes_features`, the single feature table every downstream analy
 
 ---
 
-## Analysis 1  Geospatial Hotspot Detection
+## Analysis 1 Geospatial Hotspot Detection
 
 [`05_geospatial_analysis.ipynb`](05_geospatial_analysis.ipynb) runs a genuine spatial statistics workflow, not just a heatmap:
 
@@ -203,7 +203,7 @@ grid_active['gi_star_p'] = gi_grid.p_sim
 
 ---
 
-## Analysis 2  Machine Learning Severity Prediction
+## Analysis 2 Machine Learning Severity Prediction
 
 [`06_machine_learning_models.ipynb`](06_machine_learning_models.ipynb) trains and compares **three models** to predict `severe_crash` (Fatal/Serious vs. Minor/Non-Injury), with every run logged to **MLflow**:
 - **Class imbalance handled properly**: `SMOTE` applied to the training set only (never the test set), with an 80/20 stratified split
@@ -234,7 +234,7 @@ XGBoost was selected as the operational model because **recall matters more than
 
 ---
 
-## Analysis 3  Temporal & Holiday Analysis
+## Analysis 3 Temporal & Holiday Analysis
 
 [`07_temporal_analysis.ipynb`](07_temporal_analysis.ipynb) tests whether public holiday periods carry elevated crash severity risk, using a chi-square test of independence, Cramér's V for effect size, and a year-over-year linear trend:
 
@@ -248,7 +248,7 @@ cramers_v = np.sqrt(chi2 / (n * (min(ct.shape) - 1)))
 
 ---
 
-## Analysis 4  Vulnerable Road User Risk
+## Analysis 4 Vulnerable Road User Risk
 
 [`08_vulnerable_user_analysis.ipynb`](08_vulnerable_user_analysis.ipynb) is the project's strongest single finding:
 
