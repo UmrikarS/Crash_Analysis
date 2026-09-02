@@ -25,13 +25,13 @@
 
 ---
 
-##  Project Overview
+## Project Overview
 
 Road safety in Auckland is a persistent public health problem, but crash data on its own doesn't tell decision-makers *where* to act, *which* crashes are most preventable, or *who* is most at risk. This project builds an end-to-end analytics platform on **10 years of NZTA Crash Analysis System (CAS) data (2015–2025, 111,657 crash records)** to answer exactly that  using a production-grade **Bronze–Silver–Gold Medallion Architecture** on Microsoft Fabric, four distinct analytical methods, and a stakeholder-facing Power BI dashboard.
 
 ---
 
-##  Business Problem & Research Objectives
+## Business Problem & Research Objectives
 
 **Research question:** 
 Q.1 Where do high-severity crashes cluster in Auckland?
@@ -49,7 +49,7 @@ Q.4 What should Auckland Transport / NZTA do about it?
 
 ---
 
-##  Data Source
+## Data Source
 
 | Attribute | Detail |
 |---|---|
@@ -62,7 +62,7 @@ Q.4 What should Auckland Transport / NZTA do about it?
 
 ---
 
-##  Architecture  Medallion Data Pipeline
+## Architecture  Medallion Data Pipeline
 
 ```mermaid
 flowchart TD
@@ -107,7 +107,7 @@ Every layer is a physical **Delta Lake table**, not a transient dataframe  each 
 
 ---
 
-##  Bronze Layer  Ingestion
+## Bronze Layer  Ingestion
 
 [`01_bronze_ingestion.ipynb`](01_bronze_ingestion.ipynb) reads the raw parquet file from Fabric OneLake, adds **data lineage metadata** (ingestion timestamp, source file, data source, year range), and writes it as a Delta table:
 
@@ -127,7 +127,7 @@ A built-in **data quality report** immediately follows  record count, date range
 
 ---
 
-##  Silver Layer  Cleaning & Validation
+## Silver Layer  Cleaning & Validation
 
 [`03_silver_cleaning.ipynb`](03_silver_cleaning.ipynb) applies a 7-step, fully logged cleaning pipeline:
 
@@ -145,7 +145,7 @@ Every step prints a before/after record count, so data loss at each stage is ful
 
 ---
 
-##  Gold Layer  Feature Engineering
+## Gold Layer  Feature Engineering
 
 [`04_gold_feature_engineering.ipynb`](04_gold_feature_engineering.ipynb) turns cleaned records into an ML- and BI-ready feature table  **25 engineered features** across four categories:
 
@@ -168,7 +168,6 @@ Result: `gold_crashes_features`, the single feature table every downstream analy
 
 ---
 
-
 ## Tech Stack
 
 | Layer | Tools |
@@ -184,7 +183,7 @@ Result: `gold_crashes_features`, the single feature table every downstream analy
 
 ---
 
-##  Analysis 1  Geospatial Hotspot Detection
+## Analysis 1  Geospatial Hotspot Detection
 
 [`05_geospatial_analysis.ipynb`](05_geospatial_analysis.ipynb) runs a genuine spatial statistics workflow, not just a heatmap:
 
@@ -204,7 +203,7 @@ grid_active['gi_star_p'] = gi_grid.p_sim
 
 ---
 
-##  Analysis 2  Machine Learning Severity Prediction
+## Analysis 2  Machine Learning Severity Prediction
 
 [`06_machine_learning_models.ipynb`](06_machine_learning_models.ipynb) trains and compares **three models** to predict `severe_crash` (Fatal/Serious vs. Minor/Non-Injury), with every run logged to **MLflow**:
 - **Class imbalance handled properly**: `SMOTE` applied to the training set only (never the test set), with an 80/20 stratified split
@@ -235,7 +234,7 @@ XGBoost was selected as the operational model because **recall matters more than
 
 ---
 
-##  Analysis 3  Temporal & Holiday Analysis
+## Analysis 3  Temporal & Holiday Analysis
 
 [`07_temporal_analysis.ipynb`](07_temporal_analysis.ipynb) tests whether public holiday periods carry elevated crash severity risk, using a chi-square test of independence, Cramér's V for effect size, and a year-over-year linear trend:
 
@@ -249,7 +248,7 @@ cramers_v = np.sqrt(chi2 / (n * (min(ct.shape) - 1)))
 
 ---
 
-##  Analysis 4  Vulnerable Road User Risk
+## Analysis 4  Vulnerable Road User Risk
 
 [`08_vulnerable_user_analysis.ipynb`](08_vulnerable_user_analysis.ipynb) is the project's strongest single finding:
 
@@ -264,7 +263,7 @@ Crashes involving a pedestrian, cyclist, or motorcyclist are **8.95 times more l
 
 ---
 
-##  Power BI Dashboard
+## Power BI Dashboard
 
 A 5-page interactive dashboard ([full PDF export](Power_BI_Report_Dashboard.pdf), [.pbit template](MBI908_Project_Modified_24th.pbit)) turns all four analyses into a single decision-support tool, built directly on the Gold-layer CSV exports from [`09_files.ipynb`](09_files.ipynb).
 
@@ -280,11 +279,9 @@ A 5-page interactive dashboard ([full PDF export](Power_BI_Report_Dashboard.pdf)
 
 <img width="1522" height="880" alt="3_predictive_model" src="https://github.com/user-attachments/assets/b9c2360f-f1f1-4496-8b5d-b23dc76126c3" />
 
-
 **4. Temporal & Holiday Analysis**  holiday severity vs. baseline, annual crash trend (down from a 2017 peak), and the chi-square/Cramér's V statistics surfaced directly on the dashboard rather than hidden in an appendix.
 
 <img width="1522" height="880" alt="4_temporal_holiday" src="https://github.com/user-attachments/assets/5a235c96-98a5-4392-aeeb-bcdf257388de" />
-
 
 **5. Vulnerable User Analysis**  the 8.95× relative risk headline metric, risk factors ranked by Cramér's V, and a geographic map of crashes by user type.
 
@@ -292,7 +289,7 @@ A 5-page interactive dashboard ([full PDF export](Power_BI_Report_Dashboard.pdf)
 
 ---
 
-##  Key Findings & Recommendations
+## Key Findings & Recommendations
 
 | # | Finding (statistically validated) | Recommendation |
 |---|---|---|
@@ -306,7 +303,7 @@ Twelve evidence-informed recommendations in total are detailed in the [full repo
 
 ---
 
-##  Repository Structure
+## Repository Structure
 
 ```
 Crash_Analysis/
@@ -333,7 +330,7 @@ Crash_Analysis/
 
 ---
 
-##  How to Run This Project
+## How to Run This Project
 
 This project is built for **Microsoft Fabric** (PySpark notebooks + Delta Lake + OneLake), not a local Python environment  the ingestion notebook reads from an `abfss://` OneLake path, and every layer writes/reads Delta tables via `spark.table(...)`.
 
@@ -369,7 +366,7 @@ Open [`MBI908_Project_Modified_24th.pbit`](MBI908_Project_Modified_24th.pbit) in
 
 ---
 
-##  Limitations & Ethical Considerations
+## Limitations & Ethical Considerations
 
 - **No crash-hour data**: the public CAS dataset excludes time-of-day, which caps the ML model's achievable performance and is explicitly acknowledged rather than glossed over.
 - **Te Tiriti o Waitangi**: the research explicitly considers ethical and cultural responsibilities in data stewardship when working with public safety data affecting Māori and all New Zealand communities.
